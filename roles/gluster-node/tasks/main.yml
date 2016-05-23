@@ -1,0 +1,10 @@
+- copy:
+    src=boot.sh
+    dest=/opt/boot.sh
+    mode=0700
+  tags: booter
+
+- copy:
+    src=play-boot.yml
+    dest=/opt/play-boot.yml
+  tags: booter

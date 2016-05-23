@@ -1,0 +1,51 @@
+- hosts: localhost
+  become: no
+
+  pre_tasks:
+    - shell: >
+        curl -s http://instance-data/latest/meta-data/placement/availability-zone | sed -e 's/\(.*\)-\([0-9]\)./\1-\2/g'
+      register: sh_current_region
+      changed_when: false
+
+    - shell: >
+        curl -s http://instance-data/latest/meta-data/instance-id
+      register: sh_instance_id
+      changed_when: false
+
+    - set_fact:
+        current_region: "{{ sh_current_region.stdout }}"
+        instance_id: "{{ sh_instance_id.stdout }}"
+
+    - shell: >
+        aws ec2 describe-tags --region {{ current_region }} --filters "Name=resource-id,Values={{ instance_id }}" "Name=key,Values=aws:autoscaling:groupName" --output=text | cut -f5
+      register: sh_autoscaling_group_id
+      changed_when: false
+
+    - set_fact:
+        autoscaling_group_id: "{{ sh_autoscaling_group_id.stdout }}"
+
+    - shell: >
+        aws autoscaling describe-auto-scaling-groups --region {{ current_region }} --auto-scaling-group-name {{ autoscaling_group_id }} | jq '.AutoScalingGroups[].Instances[].InstanceId' -r
+      register: sh_instance_ids
+      changed_when: false
+
+    - shell: >
+        aws ec2 describe-instances --region {{ current_region }} --instance-ids '{{ sh_instance_ids.stdout_lines | to_json }}' | jq '.Reservations[].Instances[].NetworkInterfaces[].PrivateIpAddress' -r
+      register: sh_instance_ips
+      changed_when: false
+
+    - set_fact:
+        partner_ips: "{{ sh_instance_ips.stdout_lines }}"
+
+    - debug: var=partner_ips
+
+  tasks:
+    - route53:
+        alias_hosted_zone_id="{{ instance.parent_dns_zone }}"
+        zone="gluster.aws.wescale.fr"
+        private_zone=yes
+        command=create
+        record="node.gluster.aws.wescale.fr."
+        overwrite=yes
+        type="A"
+        value="{{ partner_ips|join(',') }}"

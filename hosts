@@ -1,0 +1,6 @@
+[gluster]
+10.100.10.239
+10.100.20.59
+
+[bastion]
+bastion.glusterlab
