@@ -1,15 +1,13 @@
-provider aws {
-  region = "${var.aws_region}"
-}
+provider aws {}
 
-variable "gluster_dns_zone_id" {}
-
-variable "ami_id" {}
 variable "vpc_id" {}
+variable "ami_id" {}
+variable "gluster_dns_zone_id" {}
 
 variable "aws_region" {
   default = "eu-west-1"
 }
+
 variable "min_size" {
   default = 2
 }
@@ -19,12 +17,11 @@ variable "max_size" {
 variable "desired_size" {
   default = 2
 }
-variable "keypair_name" { }
-variable "subnet_1" { }
-variable "subnet_2" { }
-variable "ec2_flavor" { }
-variable "bastion_realm_security_group" { }
-
+variable "keypair_name" {}
+variable "subnet_1" {}
+variable "subnet_2" {}
+variable "ec2_flavor" {}
+variable "bastion_realm_security_group" {}
 
 resource "aws_iam_role" "node" {
   name = "gluster.node.role_assume"
@@ -92,7 +89,12 @@ resource "aws_launch_configuration" "node" {
   iam_instance_profile = "${aws_iam_instance_profile.node.id}"
   key_name = "${var.keypair_name}"
 
-  security_groups = ["${var.bastion_realm_security_group}", "${aws_security_group.net_access.id}"]
+  security_groups = [
+    "${var.bastion_realm_security_group}",
+    "${aws_security_group.net_access.id}",
+    "${aws_security_group.gluster_communication.id}",
+    "${aws_security_group.gluster_member.id}"
+  ]
   ebs_optimized = false
   user_data = <<EOF
 
@@ -125,6 +127,68 @@ resource "aws_security_group" "net_access" {
   }
 }
 
+resource "aws_security_group" "gluster_member" {
+  name = "gluster_member"
+  vpc_id = "${var.vpc_id}"
+}
+resource "aws_security_group" "gluster_communication" {
+  name = "gluster_communication"
+  vpc_id = "${var.vpc_id}"
+
+  ingress{
+    from_port = 24007
+    to_port = 24008
+    protocol = "TCP"
+    security_groups = ["${aws_security_group.gluster_member.id}"]
+  }
+
+  egress{
+    from_port = 24007
+    to_port = 24008
+    protocol = "TCP"
+    security_groups = ["${aws_security_group.gluster_member.id}"]
+  }
+
+  ingress{
+    from_port = 49152
+    to_port = 49352
+    protocol = "TCP"
+    security_groups = ["${aws_security_group.gluster_member.id}"]
+  }
+
+  egress{
+    from_port = 49152
+    to_port = 49352
+    protocol = "TCP"
+    security_groups = ["${aws_security_group.gluster_member.id}"]
+  }
+
+  ingress{
+    from_port = 111
+    to_port = 111
+    protocol = "TCP"
+    security_groups = ["${aws_security_group.gluster_member.id}"]
+  }
+  egress{
+    from_port = 111
+    to_port = 111
+    protocol = "TCP"
+    security_groups = ["${aws_security_group.gluster_member.id}"]
+  }
+  ingress{
+    from_port = 111
+    to_port = 111
+    protocol = "UDP"
+    security_groups = ["${aws_security_group.gluster_member.id}"]
+  }
+  egress{
+    from_port = 111
+    to_port = 111
+    protocol = "UDP"
+    security_groups = ["${aws_security_group.gluster_member.id}"]
+  }
+}
+
 resource "aws_autoscaling_group" "node" {
 
   availability_zones = ["${var.aws_region}a", "${var.aws_region}c"]
@@ -148,7 +212,7 @@ resource "aws_autoscaling_group" "node" {
   }
 
   tag {
-    key = "tech_role"
+    key = "Name"
     value = "glusterfs-node"
     propagate_at_launch = true
   }

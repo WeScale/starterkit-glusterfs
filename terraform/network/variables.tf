@@ -1,6 +1,3 @@
-variable "aws_credentials_file" {}
-variable "aws_credentials_profile" {}
-
 variable "aws_region" {
   default = "eu-west-1"
 }
@@ -19,10 +16,10 @@ variable "amis" {
 
 variable "vpc_cidr" {}
 
-variable "public_subnet_cidr" {}
+variable "public_subnet_cidr_a" {}
 variable "public_subnet_cidr_c" {}
 
-variable "private_subnet_cidr" {}
+variable "private_subnet_cidr_a" {}
 variable "private_subnet_cidr_c" {}
 
 variable "aws_key_path" {}

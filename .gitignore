@@ -4,3 +4,4 @@
 *.iws
 *.tfstate.backup
 *.retry
+.terraform
