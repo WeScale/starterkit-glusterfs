@@ -1,6 +1,9 @@
 provider aws {}
 
+# Coming from "network" outputs
 variable "vpc_id" {}
+variable "bastion_realm_security_group" {}
+
 variable "ami_id" {}
 variable "gluster_dns_zone_id" {}
 
@@ -21,7 +24,7 @@ variable "keypair_name" {}
 variable "subnet_1" {}
 variable "subnet_2" {}
 variable "ec2_flavor" {}
-variable "bastion_realm_security_group" {}
+
 
 resource "aws_iam_role" "node" {
   name = "gluster.node.role_assume"

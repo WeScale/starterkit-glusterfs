@@ -3,9 +3,10 @@ variable "aws_region" {
 }
 
 
-variable "environment" {
-  default = "tmplab"
+variable "vpc_name" {
+  default = "LAB"
 }
+variable "vpc_cidr" {}
 
 variable "amis" {
   description = "AMIs by region"
@@ -14,7 +15,7 @@ variable "amis" {
   }
 }
 
-variable "vpc_cidr" {}
+
 
 variable "public_subnet_cidr_a" {}
 variable "public_subnet_cidr_c" {}

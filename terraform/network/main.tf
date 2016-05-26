@@ -4,7 +4,7 @@ resource "aws_vpc" "vpc" {
   cidr_block = "${var.vpc_cidr}"
   enable_dns_hostnames = true
   tags {
-    Name = "GlusterFS-Lab"
+    Name = "${var.vpc_name}"
   }
 }
 
@@ -19,7 +19,7 @@ resource "aws_route_table" "main" {
     gateway_id = "${aws_internet_gateway.gateway.id}"
   }
   tags {
-    Name = "Main route table for GlusterFS-Lab VPC"
+    Name = "Main route table for ${var.vpc_name} VPC"
   }
 }
 
@@ -29,30 +29,43 @@ resource "aws_main_route_table_association" "main" {
 }
 
 module "zone_a" {
-  source = "./az_perimeter"
+  source = "github.com/WeScale/terraform-aws-az"
 
-  label = "zone_a"
+  vpc_id = "${aws_vpc.vpc.id}"
+  vpc_name = "${var.vpc_name}"
   availability_zone = "eu-west-1a"
   public_subnet_cidr = "${var.public_subnet_cidr_a}"
   private_subnet_cidr = "${var.private_subnet_cidr_a}"
   public_gateway_route_table_id = "${aws_route_table.main.id}"
-  vpc_id = "${aws_vpc.vpc.id}"
+}
+
+module "bastion_zone_a" {
+  source = "./bastion"
+
   bastion_ami_id = "ami-e079f893"
+  bastion_subnet_id = "${module.zone_a.public_subnet_id}"
   bastion_instance_type = "t2.medium"
   bastion_keypair = "${var.aws_key_name}"
   bastion_security_group = "${aws_security_group.bastions.id}"
 }
 
-module "zone_c" {
-  source = "./az_perimeter"
 
-  label = "zone_c"
+module "zone_c" {
+  source = "github.com/WeScale/terraform-aws-az"
+
+  vpc_id = "${aws_vpc.vpc.id}"
+  vpc_name = "${var.vpc_name}"
   availability_zone = "eu-west-1c"
   public_subnet_cidr = "${var.public_subnet_cidr_c}"
   private_subnet_cidr = "${var.private_subnet_cidr_c}"
   public_gateway_route_table_id = "${aws_route_table.main.id}"
-  vpc_id = "${aws_vpc.vpc.id}"
+}
+
+module "bastion_zone_c" {
+  source = "./bastion"
+
   bastion_ami_id = "ami-e079f893"
+  bastion_subnet_id = "${module.zone_c.public_subnet_id}"
   bastion_instance_type = "t2.medium"
   bastion_keypair = "${var.aws_key_name}"
   bastion_security_group = "${aws_security_group.bastions.id}"
@@ -89,3 +102,5 @@ resource "aws_security_group" "bastion_realm" {
     security_groups = ["${aws_security_group.bastions.id}"]
   }
 }
+
+
