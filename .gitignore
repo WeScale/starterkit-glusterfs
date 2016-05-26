@@ -3,6 +3,7 @@
 *.iml
 *.iws
 *.tfstate.backup
+*.tfstate
 *.retry
 .terraform
 secrets/*
