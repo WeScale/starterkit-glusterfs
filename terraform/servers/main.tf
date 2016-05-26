@@ -1,31 +1,5 @@
 provider aws {}
 
-# Coming from "network" outputs
-variable "vpc_id" {}
-variable "bastion_realm_security_group" {}
-
-variable "ami_id" {}
-variable "gluster_dns_zone_id" {}
-
-variable "aws_region" {
-  default = "eu-west-1"
-}
-
-variable "min_size" {
-  default = 2
-}
-variable "max_size" {
-  default = 2
-}
-variable "desired_size" {
-  default = 2
-}
-variable "keypair_name" {}
-variable "subnet_1" {}
-variable "subnet_2" {}
-variable "ec2_flavor" {}
-
-
 resource "aws_iam_role" "node" {
   name = "gluster.node.role_assume"
 

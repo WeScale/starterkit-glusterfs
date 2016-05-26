@@ -34,19 +34,20 @@ module "zone_a" {
   vpc_id = "${aws_vpc.vpc.id}"
   vpc_name = "${var.vpc_name}"
   availability_zone = "eu-west-1a"
-  public_subnet_cidr = "${var.public_subnet_cidr_a}"
-  private_subnet_cidr = "${var.private_subnet_cidr_a}"
+  public_subnet_cidr = "${var.public_subnet_cidr_1}"
+  private_subnet_cidr = "${var.private_subnet_cidr_1}"
   public_gateway_route_table_id = "${aws_route_table.main.id}"
 }
 
 module "bastion_zone_a" {
-  source = "./bastion"
+  source = "github.com/WeScale/tf-mod-aws-az-bastion"
 
-  bastion_ami_id = "ami-e079f893"
-  bastion_subnet_id = "${module.zone_a.public_subnet_id}"
-  bastion_instance_type = "t2.medium"
-  bastion_keypair = "${var.aws_key_name}"
-  bastion_security_group = "${aws_security_group.bastions.id}"
+  name = "eu-west-1a"
+  ami_id = "ami-e079f893"
+  subnet_id = "${module.zone_a.public_subnet_id}"
+  instance_type = "t2.medium"
+  keypair = "${var.keypair}"
+  security_groups = "${aws_security_group.bastions.id}"
 }
 
 
@@ -56,19 +57,20 @@ module "zone_c" {
   vpc_id = "${aws_vpc.vpc.id}"
   vpc_name = "${var.vpc_name}"
   availability_zone = "eu-west-1c"
-  public_subnet_cidr = "${var.public_subnet_cidr_c}"
-  private_subnet_cidr = "${var.private_subnet_cidr_c}"
+  public_subnet_cidr = "${var.public_subnet_cidr_2}"
+  private_subnet_cidr = "${var.private_subnet_cidr_2}"
   public_gateway_route_table_id = "${aws_route_table.main.id}"
 }
 
 module "bastion_zone_c" {
-  source = "./bastion"
+  source = "github.com/WeScale/tf-mod-aws-az-bastion"
 
-  bastion_ami_id = "ami-e079f893"
-  bastion_subnet_id = "${module.zone_c.public_subnet_id}"
-  bastion_instance_type = "t2.medium"
-  bastion_keypair = "${var.aws_key_name}"
-  bastion_security_group = "${aws_security_group.bastions.id}"
+  name = "eu-west-1c"
+  ami_id = "ami-e079f893"
+  subnet_id = "${module.zone_c.public_subnet_id}"
+  instance_type = "t2.medium"
+  keypair = "${var.keypair}"
+  security_groups = "${aws_security_group.bastions.id}"
 }
 
 resource "aws_security_group" "bastions" {
