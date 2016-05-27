@@ -12,4 +12,9 @@
   roles:
     - common
     - cloud-toolbox
+
+- hosts: gluster_nodes
+  become: yes
+
+  roles:
     - gluster-node
