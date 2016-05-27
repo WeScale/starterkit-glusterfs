@@ -5,10 +5,12 @@ vpc_cidr = "10.42.0.0/16"
 keypair = "training-ansible"
 
 # AZ 1
+az_1 = "eu-west-1a"
 public_subnet_cidr_1 = "10.42.1.0/24"
 private_subnet_cidr_1 = "10.42.10.0/24"
 
 # AZ 2
+az_2 = "eu-west-1c"
 public_subnet_cidr_2 = "10.42.2.0/24"
 private_subnet_cidr_2 = "10.42.20.0/24"
 

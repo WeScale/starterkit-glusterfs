@@ -33,7 +33,7 @@ module "zone_a" {
 
   vpc_id = "${aws_vpc.vpc.id}"
   vpc_name = "${var.vpc_name}"
-  availability_zone = "eu-west-1a"
+  availability_zone = "${var.az_1}"
   public_subnet_cidr = "${var.public_subnet_cidr_1}"
   private_subnet_cidr = "${var.private_subnet_cidr_1}"
   public_gateway_route_table_id = "${aws_route_table.main.id}"
@@ -56,7 +56,7 @@ module "zone_c" {
 
   vpc_id = "${aws_vpc.vpc.id}"
   vpc_name = "${var.vpc_name}"
-  availability_zone = "eu-west-1c"
+  availability_zone = "${var.az_2}"
   public_subnet_cidr = "${var.public_subnet_cidr_2}"
   private_subnet_cidr = "${var.private_subnet_cidr_2}"
   public_gateway_route_table_id = "${aws_route_table.main.id}"

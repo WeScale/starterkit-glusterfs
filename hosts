@@ -1,6 +1,20 @@
-[gluster]
-10.100.10.239
-10.100.20.59
+[bastion_zone_1]
+52.50.37.104
 
-[bastion]
-bastion.glusterlab
+[bastion_zone_2]
+52.51.189.113
+
+[gluster_nodes_zone_1]
+10.42.10.14
+
+[gluster_nodes_zone_2]
+10.42.20.77
+
+[gluster_nodes:children]
+gluster_nodes_zone_1
+gluster_nodes_zone_2
+
+[bastions:children]
+bastion_zone_1
+bastion_zone_2
+

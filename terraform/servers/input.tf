@@ -11,10 +11,12 @@ variable "aws_region" {
   default = "eu-west-1"
 }
 
+variable "az_1" {}
+variable "az_2" {}
 variable "min_size" {}
 variable "max_size" {}
 variable "desired_size" {}
 variable "keypair" {}
-variable "subnet_1" {}
-variable "subnet_2" {}
+variable "private_subnet_1" {}
+variable "private_subnet_2" {}
 variable "ec2_flavor" {}

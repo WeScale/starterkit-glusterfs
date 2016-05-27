@@ -10,10 +10,12 @@ variable "amis" {
   }
 }
 
+variable "az_1" {}
 variable "public_subnet_cidr_1" {}
-variable "public_subnet_cidr_2" {}
-
 variable "private_subnet_cidr_1" {}
+
+variable "az_2" {}
+variable "public_subnet_cidr_2" {}
 variable "private_subnet_cidr_2" {}
 
 variable "keypair" {}

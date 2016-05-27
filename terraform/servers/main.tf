@@ -64,7 +64,7 @@ resource "aws_launch_configuration" "node" {
   instance_type = "${var.ec2_flavor}"
 
   iam_instance_profile = "${aws_iam_instance_profile.node.id}"
-  key_name = "${var.keypair_name}"
+  key_name = "${var.keypair}"
 
   security_groups = [
     "${var.bastion_realm_security_group}",
@@ -168,7 +168,7 @@ resource "aws_security_group" "gluster_communication" {
 
 resource "aws_autoscaling_group" "node" {
 
-  availability_zones = ["${var.aws_region}a", "${var.aws_region}c"]
+  availability_zones = ["${var.az_1}", "${var.az_2}"]
 
   name = "asg.gluster.nodes"
 
@@ -180,7 +180,7 @@ resource "aws_autoscaling_group" "node" {
   health_check_type = "EC2"
   force_delete = true
 
-  vpc_zone_identifier = ["${var.subnet_1}", "${var.subnet_2}"]
+  vpc_zone_identifier = ["${var.private_subnet_1}", "${var.private_subnet_2}"]
 
   launch_configuration = "${aws_launch_configuration.node.name}"
 
