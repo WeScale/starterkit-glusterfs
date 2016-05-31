@@ -60,7 +60,7 @@ EOF
 resource "aws_launch_configuration" "node" {
 
   name_prefix = "gluster.node"
-  image_id = "${var.ami_id}"
+  image_id = "${var.gluster_ami_id}"
   instance_type = "${var.ec2_flavor}"
 
   iam_instance_profile = "${aws_iam_instance_profile.node.id}"
@@ -68,7 +68,7 @@ resource "aws_launch_configuration" "node" {
 
   security_groups = [
     "${var.bastion_realm_security_group}",
-    "${aws_security_group.net_access.id}",
+    "${var.net_access_security_group}",
     "${aws_security_group.gluster_communication.id}",
     "${aws_security_group.gluster_member.id}"
   ]
@@ -80,27 +80,14 @@ runcmd:
   - [ /bin/bash, /opt/boot.sh ]
 write_files:
   - content: |
-        ---
-        instance:
-          parent_dns_zone: "${var.gluster_dns_zone_id}"
+      ---
+      instance:
+        parent_dns_zone: "${var.gluster_dns_zone_id}"
     path: /opt/boot-data.yml
-
 EOF
 
   lifecycle {
     create_before_destroy = true
-  }
-}
-
-resource "aws_security_group" "net_access" {
-  name = "net_access"
-  vpc_id = "${var.vpc_id}"
-
-  egress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
   }
 }
 

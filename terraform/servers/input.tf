@@ -3,7 +3,9 @@ variable "vpc_id" {}
 
 variable "bastion_realm_security_group" {}
 
-variable "ami_id" {}
+variable "net_access_security_group" {}
+
+variable "gluster_ami_id" {}
 
 variable "gluster_dns_zone_id" {}
 

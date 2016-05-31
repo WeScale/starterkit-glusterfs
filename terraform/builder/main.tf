@@ -40,7 +40,7 @@ module "zone_a" {
 }
 
 module "bastion_zone_a" {
-  source = "github.com/WeScale/tf-mod-aws-az-bastion"
+  source = "git::ssh://git@gitlab.aldebaran.com/terraform-stacks-aws/dummy.git/subdir"
 
   name = "eu-west-1a"
   ami_id = "ami-e079f893"
@@ -105,14 +105,4 @@ resource "aws_security_group" "bastion_realm" {
   }
 }
 
-resource "aws_security_group" "net_access" {
-  name = "net_access"
-  vpc_id = "${aws_vpc.vpc.id}"
 
-  egress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}

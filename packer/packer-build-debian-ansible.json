@@ -1,0 +1,49 @@
+{
+  "variables": {
+    "aws_default_region": "{{ env `AWS_DEFAULT_REGION` }}",
+    "aws_access_key_id": "{{ env `AWS_ACCESS_KEY_ID` }}",
+    "aws_secret_access_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
+    "buildmark": "",
+    "aws_source_ami": "ami-8ad94af9",
+    "security_group_id": "",
+    "subnet_id": "",
+    "vpc_id": ""
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "ami_name": "ami-centos7-ansible-{{ user `buildmark` }}",
+      "access_key": "{{ user `aws_access_key_id` }}",
+      "secret_key": "{{ user `aws_secret_access_key` }}",
+      "source_ami": "{{ user `aws_source_ami` }}",
+      "ami_regions": "{{ user `aws_default_region` }}",
+      "iam_instance_profile": "ami_building_instance_profile",
+      "region": "{{ user `aws_default_region` }}",
+      "instance_type": "t2.medium",
+      "availability_zone": "eu-west-1a",
+      "vpc_id": "{{ user `vpc_id` }}",
+      "subnet_id": "{{ user `subnet_id` }}",
+      "associate_public_ip_address": true,
+      "security_group_ids": [
+        "{{ user `security_group_id` }}"
+      ],
+      "communicator": "ssh",
+      "ssh_pty": true,
+      "ssh_username": "admin"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "override": {
+        "amazon-ebs": {
+          "execute_command": "sudo chmod +x {{ .Path }}; sudo -H {{ .Path }}"
+        }
+      },
+      "scripts": [
+        "./scripts/ansible-seed-debian.sh"
+      ]
+    }
+  ]
+}
+

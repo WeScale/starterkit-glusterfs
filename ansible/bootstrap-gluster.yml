@@ -1,0 +1,15 @@
+- hosts: localhost
+  become: yes
+
+  pre_tasks:
+    - name: ansible-ization
+      script: >
+        scripts/ansible-seed-debian.sh
+      register: ansible_seed
+      changed_when: ansible_seed.rc == 0
+      failed_when: ansible_seed.rc != 0 and ansible_seed.rc != 42
+
+  roles:
+    - common
+    - cloud-toolbox
+    - gluster-node
