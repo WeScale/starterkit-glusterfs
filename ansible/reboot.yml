@@ -1,9 +1,0 @@
----
-- hosts: gluster_nodes
-  become: yes
-
-  tasks:
-    - command: shutdown -r now "Ansible updates triggered"
-      async: 0
-      poll: 0
-      ignore_errors: true

@@ -5,10 +5,10 @@ bastion_zone_1
 bastion_zone_2
 
 [gluster_nodes_zone_1]
-10.42.10.87
+10.42.10.126
 
 [gluster_nodes_zone_2]
-10.42.20.75
+10.42.20.105
 
 [gluster_nodes:children]
 gluster_nodes_zone_1

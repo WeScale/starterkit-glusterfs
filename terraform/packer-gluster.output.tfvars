@@ -1,1 +1,1 @@
-gluster_ami_id = "ami-5aea7929"
+gluster_ami_id = "ami-0e93007d"

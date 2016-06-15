@@ -73,6 +73,7 @@ resource "aws_launch_configuration" "node" {
     "${aws_security_group.gluster_member.id}"
   ]
   ebs_optimized = false
+
   user_data = <<EOF
 
 #cloud-config
